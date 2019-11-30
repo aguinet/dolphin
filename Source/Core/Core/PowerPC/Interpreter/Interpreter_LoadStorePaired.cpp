@@ -58,7 +58,7 @@ const float m_quantizeTable[] = {
 };
 
 template <typename SType>
-SType ScaleAndClamp(double ps, u32 stScale)
+__attribute__((always_inline)) SType ScaleAndClamp(double ps, u32 stScale)
 {
   float convPS = (float)ps * m_quantizeTable[stScale];
   float min = (float)std::numeric_limits<SType>::min();
@@ -68,7 +68,7 @@ SType ScaleAndClamp(double ps, u32 stScale)
 }
 
 template <typename T>
-static T ReadUnpaired(u32 addr);
+__attribute__((always_inline)) static T ReadUnpaired(u32 addr);
 
 template <>
 u8 ReadUnpaired<u8>(u32 addr)
@@ -89,7 +89,7 @@ u32 ReadUnpaired<u32>(u32 addr)
 }
 
 template <typename T>
-static std::pair<T, T> ReadPair(u32 addr);
+__attribute__((always_inline)) static std::pair<T, T> ReadPair(u32 addr);
 
 template <>
 std::pair<u8, u8> ReadPair<u8>(u32 addr)
@@ -155,7 +155,7 @@ void WritePair<u32>(u32 val1, u32 val2, u32 addr)
 }
 
 template <typename T>
-void QuantizeAndStore(double ps0, double ps1, u32 addr, u32 instW, u32 stScale)
+__attribute__((always_inline)) void QuantizeAndStore(double ps0, double ps1, u32 addr, u32 instW, u32 stScale)
 {
   using U = std::make_unsigned_t<T>;
 
@@ -171,7 +171,7 @@ void QuantizeAndStore(double ps0, double ps1, u32 addr, u32 instW, u32 stScale)
   }
 }
 
-static void Helper_Quantize(const PowerPC::PowerPCState* ppcs, u32 addr, u32 instI, u32 instRS,
+__attribute__((always_inline)) static void Helper_Quantize(const PowerPC::PowerPCState* ppcs, u32 addr, u32 instI, u32 instRS,
                             u32 instW)
 {
   const UGQR gqr(ppcs->spr[SPR_GQR0 + instI]);
@@ -248,7 +248,7 @@ std::pair<double, double> LoadAndDequantize(u32 addr, u32 instW, u32 ldScale)
   return {static_cast<double>(ps0), static_cast<double>(ps1)};
 }
 
-static void Helper_Dequantize(PowerPC::PowerPCState* ppcs, u32 addr, u32 instI, u32 instRD,
+__attribute__((always_inline)) static void Helper_Dequantize(PowerPC::PowerPCState* ppcs, u32 addr, u32 instI, u32 instRD,
                               u32 instW)
 {
   UGQR gqr(ppcs->spr[SPR_GQR0 + instI]);

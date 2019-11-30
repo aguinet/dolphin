@@ -40,7 +40,7 @@ inline double ForceSingle(const UReg_FPSCR& fpscr, double value)
 {
   // convert to float...
   float x = (float)value;
-  if (!cpu_info.bFlushToZero && fpscr.NI)
+  if (!/*cpu_info.bFlushToZero &&*/ fpscr.NI)
   {
     x = Common::FlushToZero(x);
   }
@@ -50,7 +50,7 @@ inline double ForceSingle(const UReg_FPSCR& fpscr, double value)
 
 inline double ForceDouble(const UReg_FPSCR& fpscr, double d)
 {
-  if (!cpu_info.bFlushToZero && fpscr.NI)
+  if (!/*cpu_info.bFlushToZero &&*/ fpscr.NI)
   {
     d = Common::FlushToZero(d);
   }

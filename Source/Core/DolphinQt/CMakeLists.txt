@@ -274,6 +274,11 @@ PRIVATE
   -DQT_NO_CAST_TO_ASCII
 )
 
+if(ENABLE_LLVM)
+  target_compile_definitions(dolphin-emu
+    PRIVATE HAVE_LLVM)
+endif()
+
 target_include_directories(dolphin-emu
 PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}

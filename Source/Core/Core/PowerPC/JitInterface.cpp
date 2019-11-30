@@ -38,6 +38,8 @@
 #include "Core/PowerPC/JitArm64/Jit.h"
 #endif
 
+#include "Core/PowerPC/LLVM/LLVM.h"
+
 namespace JitInterface
 {
 static JitBase* g_jit = nullptr;
@@ -67,6 +69,11 @@ CPUCoreBase* InitJitCore(PowerPC::CPUCore core)
   case PowerPC::CPUCore::CachedInterpreter:
     g_jit = new CachedInterpreter();
     break;
+#ifdef HAVE_LLVM
+  case PowerPC::CPUCore::JITLLVM:
+    g_jit = new LLVMJit{};
+    break;
+#endif
 
   default:
     PanicAlertT("The selected CPU emulation core (%d) is not available. "

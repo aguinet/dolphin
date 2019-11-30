@@ -35,6 +35,9 @@ u32 last_pc;
 }
 
 bool Interpreter::m_end_block;
+bool Interpreter::m_reserve;
+u32 Interpreter::m_reserve_address;
+
 
 // function tables
 std::array<Interpreter::Instruction, 64> Interpreter::m_op_table;

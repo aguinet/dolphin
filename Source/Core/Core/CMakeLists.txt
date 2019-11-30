@@ -664,3 +664,37 @@ if(UNIX)
     MemoryWatcher.h
   )
 endif()
+
+if (ENABLE_LLVM)
+  # Add the LLVM JIT
+  message(STATUS "LLVM found, enabling the LLVM JIT")
+  target_sources(core PRIVATE
+    PowerPC/LLVM/LLVM.cpp
+    PowerPC/LLVM/LLVMBlockCache.cpp
+  )
+  set_source_files_properties(PowerPC/LLVM/LLVM.cpp PROPERTIES COMPILE_FLAGS "-fno-rtti -fno-exceptions")
+
+  # TODO: this is done so that the JIT engine can find global symbols. All of
+  # this is Linux specific...
+  target_link_options(core PUBLIC -rdynamic)
+  target_compile_options(core PRIVATE -fvisibility=default)
+
+  target_compile_definitions(core PRIVATE HAVE_LLVM)
+  target_link_libraries(core PRIVATE LLVM)
+  target_include_directories(core PRIVATE ${LLVM_INCLUDE_DIRS})
+
+  # Pre-compile the JIT runtime to LLVM IR
+  set(LLVMJIT_RT_SRC "${CMAKE_CURRENT_SOURCE_DIR}/PowerPC/LLVM/JITRuntime.cpp")
+  # This is very hacky, but will do for this PoC...
+  set(LLVMJIT_RT_BC  "${CMAKE_BINARY_DIR}/Binaries/llvmjitrt.bc")
+  # TODO: use FindProgram? (but need to check clang's version)
+  set(CLANG_BIN "${LLVM_TOOLS_BINARY_DIR}/clang")
+  add_custom_command(OUTPUT ${LLVMJIT_RT_BC}
+    COMMAND ${CLANG_BIN} -c -emit-llvm "-I$<JOIN:$<TARGET_PROPERTY:core,INCLUDE_DIRECTORIES>,;-I>" "-D$<JOIN:$<TARGET_PROPERTY:core,COMPILE_DEFINITIONS>,;-D>" -std=c++"$<TARGET_PROPERTY:core,CXX_STANDARD>" -g0 -O2 ${LLVMJIT_RT_SRC} -o ${LLVMJIT_RT_BC}
+    COMMAND_EXPAND_LISTS
+    MAIN_DEPENDENCY ${LLVMJIT_RT_SRC})
+  add_custom_target(LLVMJITRT
+    DEPENDS ${LLVMJIT_RT_BC})
+  add_dependencies(core LLVMJITRT)
+endif()
+

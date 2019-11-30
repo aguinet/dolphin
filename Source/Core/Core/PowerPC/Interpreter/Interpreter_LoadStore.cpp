@@ -16,9 +16,6 @@
 #include "Core/PowerPC/MMU.h"
 #include "Core/PowerPC/PowerPC.h"
 
-bool Interpreter::m_reserve;
-u32 Interpreter::m_reserve_address;
-
 static u32 Helper_Get_EA(const PowerPC::PowerPCState& ppcs, const UGeckoInstruction inst)
 {
   return inst.RA ? (ppcs.gpr[inst.RA] + inst.SIMM_16) : (u32)inst.SIMM_16;
