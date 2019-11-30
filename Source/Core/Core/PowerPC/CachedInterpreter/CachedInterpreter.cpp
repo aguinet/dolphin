@@ -54,8 +54,6 @@ CachedInterpreter::~CachedInterpreter() = default;
 
 void CachedInterpreter::Init()
 {
-  m_code.reserve(CODE_SIZE / sizeof(Instruction));
-
   jo.enableBlocklink = false;
 
   m_block_cache.Init();

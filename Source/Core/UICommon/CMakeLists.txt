@@ -53,7 +53,6 @@ if(LIBUSB_FOUND)
 endif()
 
 if(ENABLE_LLVM)
-  find_package(LLVM CONFIG QUIET)
   if(LLVM_FOUND AND TARGET LLVM)
     message(STATUS "LLVM found, enabling LLVM support in disassembler")
     target_compile_definitions(uicommon PRIVATE HAVE_LLVM)
