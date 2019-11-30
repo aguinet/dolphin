@@ -512,6 +512,12 @@ if(ANDROID)
   include_directories(Source/Android)
 endif()
 
+# LLVM
+if(ENABLE_LLVM)
+  # We need at least LLVM 9 for the ORC JIT API
+  find_package(LLVM 9 CONFIG QUIET)
+endif()
+
 ########################################
 # Process externals and setup their include directories
 #

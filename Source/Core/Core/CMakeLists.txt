@@ -664,3 +664,16 @@ if(UNIX)
     MemoryWatcher.h
   )
 endif()
+
+if (ENABLE_LLVM)
+  # Add the LLVM JIT
+  message(STATUS "LLVM found, enabling the LLVM JIT")
+  target_sources(core PRIVATE
+    PowerPC/LLVM/LLVM.cpp
+    PowerPC/LLVM/LLVMBlockCache.cpp
+  )
+  target_compile_definitions(core PRIVATE HAVE_LLVM)
+  target_link_libraries(core PRIVATE LLVM)
+  target_include_directories(core PRIVATE ${LLVM_INCLUDE_DIRS})
+endif()
+

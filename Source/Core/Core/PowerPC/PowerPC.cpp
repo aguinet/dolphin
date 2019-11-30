@@ -228,6 +228,9 @@ const std::vector<CPUCore>& AvailableCPUCores()
 #endif
       CPUCore::CachedInterpreter,
       CPUCore::Interpreter,
+#ifdef HAVE_LLVM
+      CPUCore::JITLLVM
+#endif
   };
 
   return cpu_cores;
